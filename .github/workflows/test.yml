@@ -1,0 +1,51 @@
+name: "test"
+
+on:
+  push:
+    paths:
+      - ".github/**"
+      - "devShells/**"
+      - "packages/**"
+
+jobs:
+  develop-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        language: [angular, dotnet, gleam, haskell, java, node, python, rust]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix develop .#${{ matrix.language }}
+
+  develop-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        language: [angular, dotnet, gleam, haskell, java, node, python, rust]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix develop .#${{ matrix.language }}
+
+  run-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [dev, dotnet-run, github-release, npm-run, tmux]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix profile install .#${{ matrix.package }}
+      - run: which ${{ matrix.package }}
+
+  run-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        package: [dev, dotnet-run, github-release, npm-run, tmux]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix profile install .#${{ matrix.package }}
+      - run: which ${{ matrix.package }}
