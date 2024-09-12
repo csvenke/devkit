@@ -4,17 +4,22 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    neovim.url = "github:csvenke/neovim-flake";
     angular-language-server.url = "github:csvenke/angular-language-server-flake";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = nixpkgs.lib.systems.flakeExposed;
+      imports = [
+        inputs.flake-parts.flakeModules.easyOverlay
+      ];
       perSystem = { pkgs, system, ... }:
         let
           pkgs = import nixpkgs {
             inherit system;
             overlays = [
+              inputs.neovim.overlays.default
               inputs.angular-language-server.overlays.default
             ];
           };
@@ -31,6 +36,9 @@
             ];
         in
         {
+          overlayAttrs = {
+            devkit = callPackages ./packages;
+          };
           packages = callPackages ./packages;
           devShells = callPackages ./devShells;
         };
