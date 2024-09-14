@@ -3,9 +3,10 @@ name: "test"
 on:
   pull_request:
     paths:
-      - ".github/**"
       - "devShells/**"
       - "packages/**"
+      - "flake.lock"
+      - "flake.nix"
 
 jobs:
   develop-linux:
