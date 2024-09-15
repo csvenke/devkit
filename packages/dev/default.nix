@@ -2,6 +2,7 @@
 
 pkgs.writeShellApplication {
   name = "dev";
-  runtimeInputs = with pkgs; [ fd findutils gnused gawk ];
+  runtimeInputs = with pkgs; [ fd fzf gnused gawk ];
   text = builtins.readFile ./script.bash;
 }
+

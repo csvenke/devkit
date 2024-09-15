@@ -1,59 +1,47 @@
-function getEnvOrDefault() {
-  local value="$1"
-  local defaultValue="$2"
-  echo "${!value:-$defaultValue}"
-}
+function main() {
+  local search_pattern="(\.git$|package\.json$|\.sln$|\.csproj$)"
+  local search_paths
 
-SEARCH_DIRS=$(getEnvOrDefault "DEV_SEARCH_DIRS" "$HOME/repos")
-ROOT_FILE_PATTERN=$(getEnvOrDefault "DEV_ROOT_FILE_PATTERN" "(\.git$|package\.json$|\.sln$|\.csproj$)")
+  search_paths=$(find_search_paths)
+  read -r -a search_paths_array <<<"$search_paths"
 
-function findRoots() {
-  local search_dir=$1
-  local root_files="$ROOT_FILE_PATTERN"
-  fd --hidden --follow --regex "$root_files" "$search_dir" |
-    xargs -I {} dirname {} |
-    sort -u |
-    sed "s|^$search_dir/||" |
-    awk -v prefix="$search_dir" 'BEGIN { gray="\033[90m"; blue="\033[34m"; reset="\033[0m"; folderIcon=" "; } { print blue folderIcon $0 reset " " gray "(" prefix "/" $0 ")" reset }'
-}
+  local project_paths
+  project_paths=$(find_project_paths "$search_pattern" "${search_paths_array[@]}")
 
-function gatherRoots() {
-  local directory_paths=""
+  local selected_path
+  selected_path=$(select_path "$project_paths")
 
-  for dir in "$@"; do
-    if [ -e "$dir" ]; then
-      matches=$(findRoots "$dir")
-      directory_paths=$(printf "%s\n%s" "$directory_paths" "$matches")
-    fi
-  done
+  if [[ -z "$selected_path" ]]; then
+    exit 1
+  fi
 
-  echo "$directory_paths"
-}
+  cd "$selected_path" || exit 1
 
-function selectDir() {
-  local formatted_directories="$1"
-  echo "$formatted_directories" |
-    fzf --ansi --border=none |
-    sed 's/.*(\(.*\)).*/\1/'
-}
+  if [ -n "$VISUAL" ]; then
+    "$VISUAL" .
+    exit 0
+  fi
 
-function openWithEditor() {
-  local target_path="$1"
-  if [ -n "$target_path" ]; then
-    cd "$target_path" || exit
-    $VISUAL .
+  if [ -n "$EDITOR" ]; then
+    "$EDITOR" .
+    exit 0
   fi
 }
 
-function dev() {
-  if [ $# -eq 0 ]; then
-    return 1
-  fi
-
-  project_dirs=$(gatherRoots "$@")
-  selected_project_dir=$(selectDir "$project_dirs")
-  openWithEditor "$selected_project_dir"
+function find_search_paths() {
+  fd --type d --max-depth 1 --absolute-path . "$HOME" | sed 's@/$@@' | tr '\n' ' '
 }
 
-read -ra search_dir_args <<<"$SEARCH_DIRS"
-dev "${search_dir_args[@]}"
+function find_project_paths() {
+  local root_files="$1"
+  shift
+  local search_dir=("$@")
+  fd --hidden --follow --regex "$root_files" "${search_dir[@]}" -x dirname | sort -u
+}
+
+function select_path() {
+  local paths="$1"
+  echo "$paths" | sed 's|.*/\([^/]*\)|\1 (\0)|' | fzf --ansi --border=none | sed -n 's/.*(\(.*\)).*/\1/p'
+}
+
+main
