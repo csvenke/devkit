@@ -1,8 +1,9 @@
 function main() {
-  local search_pattern="(\.git$|package\.json$|\.sln$|\.csproj$)"
-  local search_paths
+  local search_pattern="(.git$)"
 
+  local search_paths
   search_paths=$(find_search_paths)
+
   read -r -a search_paths_array <<<"$search_paths"
 
   local project_paths
@@ -30,15 +31,17 @@ function select_path() {
   local pretty_project_paths
   pretty_project_paths=$(make_pretty_paths "$project_paths")
 
-  echo "$pretty_project_paths" |
-    fzf --ansi --border=none --info=inline |
-    sed -n 's/.*(\(.*\)).*/\1/p'
+  echo "$pretty_project_paths" | fzf --ansi --border=none --info=inline | unmake_pretty_path
 }
 
 function make_pretty_paths() {
   echo "$1" |
     awk '{ cmd = "basename " $1; cmd | getline base; close(cmd); printf "%s (%s)\n", base, $1 }' |
     awk 'BEGIN { gray="\033[90m"; blue="\033[34m"; reset="\033[0m"; folderIcon=" "; } { print blue folderIcon $1 reset " " gray ""$2"" reset }'
+}
+
+function unmake_pretty_path() {
+  sed -n 's/.*(\(.*\)).*/\1/p'
 }
 
 function open_path() {
