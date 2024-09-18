@@ -1,10 +1,10 @@
 function main() {
   local search_pattern="(.git$)"
+  local search_paths_array=("$@")
 
-  local search_paths
-  search_paths=$(find_search_paths)
-
-  read -r -a search_paths_array <<<"$search_paths"
+  if [ "${#search_paths_array[@]}" -eq 0 ]; then
+    mapfile -t search_paths_array < <(find_search_paths)
+  fi
 
   local project_paths
   project_paths=$(find_project_paths "$search_pattern" "${search_paths_array[@]}")
@@ -16,7 +16,7 @@ function main() {
 }
 
 function find_search_paths() {
-  fd --type d --max-depth 1 --absolute-path . "$HOME" | sed 's@/$@@' | tr '\n' ' '
+  fd --type d --max-depth 1 --absolute-path . "$HOME" | sed 's@/$@@'
 }
 
 function find_project_paths() {
@@ -64,4 +64,4 @@ function open_path() {
   fi
 }
 
-main
+main "$@"
