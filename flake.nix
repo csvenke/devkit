@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    neovim.url = "github:csvenke/neovim-flake";
     angular-language-server.url = "github:csvenke/angular-language-server-flake";
   };
 
@@ -19,7 +18,6 @@
           pkgs = import nixpkgs {
             inherit system;
             overlays = [
-              inputs.neovim.overlays.default
               inputs.angular-language-server.overlays.default
             ];
           };
