@@ -1,15 +1,10 @@
-name: "test"
+name: "pull-request"
 
 on:
   pull_request:
-    paths:
-      - "devShells/**"
-      - "packages/**"
-      - "flake.lock"
-      - "flake.nix"
 
 jobs:
-  develop:
+  test-develop:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -20,7 +15,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - run: nix develop .#${{ matrix.shell }}
 
-  profile:
+  test-profile:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -31,3 +26,14 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - run: nix profile install .#${{ matrix.package }}
       - run: which ${{ matrix.package }}
+
+  automerge:
+    needs: [test-develop, test-profile]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - run: gh pr merge --rebase --auto
+    env:
+      GH_TOKEN: ${{ secrets.GH_REPO_PAT }}
