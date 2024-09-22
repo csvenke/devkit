@@ -28,6 +28,7 @@ jobs:
       - run: which ${{ matrix.package }}
 
   automerge:
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
     needs: [test-develop, test-profile]
     runs-on: ubuntu-latest
     steps:
