@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1727139593,
-        "narHash": "sha256-IK7PGA8ccDMz86+3BGs5sjdpv970UK7oCkgbVJuLxLk=",
+        "lastModified": 1727209833,
+        "narHash": "sha256-8XHzWmxQGudrb7YRz3qU8SxUaM732YnjYKb0+PfBHj0=",
         "owner": "csvenke",
         "repo": "angular-language-server-flake",
-        "rev": "a0c0e2b0a3b5a80381c9bbdaaf961c97399a1b08",
+        "rev": "70bcce8e79b61f50027740ea9abe925bf65525df",
         "type": "github"
       },
       "original": {
