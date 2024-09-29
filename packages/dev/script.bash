@@ -53,6 +53,11 @@ function open_path() {
 
   cd "$path" || exit 1
 
+  if command -v nvim &>/dev/null; then
+    nvim
+    exit 0
+  fi
+
   if [ -n "$VISUAL" ]; then
     "$VISUAL" .
     exit 0
