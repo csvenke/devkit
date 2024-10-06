@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        package: [dev, dotnet-run, format, github-release, npm-run, tmux]
+        package: [dev, format, github-release, run, tmux]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
