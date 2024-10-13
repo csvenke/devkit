@@ -1,5 +1,5 @@
 function main() {
-  local search_pattern="(.git$)"
+  local search_pattern="(^.git$)"
   local search_paths_array=("$@")
 
   if [ "${#search_paths_array[@]}" -eq 0 ]; then
@@ -23,7 +23,7 @@ function find_project_paths() {
   local root_files="$1"
   shift
   local search_dir=("$@")
-  fd --hidden --follow --regex "$root_files" "${search_dir[@]}" -x dirname | sort -u
+  fd --max-depth 2 --hidden --follow --regex "$root_files" "${search_dir[@]}" -x dirname | sort -u
 }
 
 function select_path() {
