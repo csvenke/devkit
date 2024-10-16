@@ -2,17 +2,13 @@
 
 pkgs.mkShell {
   packages = with pkgs; [
-    nodejs
     fnm
     bun
     yarn
-    nodePackages.pnpm
+    pnpm
   ];
 
-  shellHook = /* bash */ ''
-    if [ -e .node-version ] || [ -e .nvmrc ]; then
-      eval "$(fnm env)"
-      fnm use --install-if-missing --silent-if-unchanged
-    fi
+  shellHook = ''
+    eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell bash)"
   '';
 }
