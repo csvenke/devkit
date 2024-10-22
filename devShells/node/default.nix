@@ -1,7 +1,9 @@
-{ pkgs }:
+{ pkgs ? import <nixpkgs-unstable> { } }:
 
 pkgs.mkShell {
   packages = with pkgs; [
+    node2nix
+    nodejs
     fnm
     bun
     yarn
@@ -9,6 +11,9 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell bash)"
+    if [ -e .node-version ] || [ -e .nvmrc ]; then
+      eval "$(fnm env --shell bash)"
+      fnm use --install-if-missing --silent-if-unchanged > /dev/null
+    fi
   '';
 }
