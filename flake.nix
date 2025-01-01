@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    angular-language-server.url = "github:csvenke/angular-language-server-flake";
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, ... }:
@@ -14,9 +13,6 @@
         let
           pkgs = import nixpkgs {
             inherit system;
-            overlays = [
-              inputs.angular-language-server.overlays.default
-            ];
           };
 
           inherit (builtins) readDir mapAttrs;
