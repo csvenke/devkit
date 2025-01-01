@@ -8,6 +8,7 @@ pkgs.mkShell {
     bun
     yarn
     pnpm
+    deno
   ];
 
   shellHook = ''
