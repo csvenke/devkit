@@ -18,8 +18,14 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = nixpkgs.lib.systems.flakeExposed;
       perSystem =
-        { pkgs, system, ... }:
+        { system, ... }:
         let
+          pkgs = import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+            };
+          };
           devShell = name: devkit.devShells.${system}.${name};
         in
         {
@@ -29,13 +35,7 @@
               inputsFrom = [
                 (devShell "node")
               ];
-              packages = with pkgs; [
-                lolcat
-                figlet
-              ];
-              shellHook = ''
-                figlet "Devkit" | lolcat
-              '';
+              packages = [ ];
             };
           };
         };
