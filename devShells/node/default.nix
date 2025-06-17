@@ -6,7 +6,6 @@ pkgs.mkShell {
     pnpm
     yarn
     bun
-    deno
     fnm
   ];
 
