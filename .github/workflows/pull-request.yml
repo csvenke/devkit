@@ -4,32 +4,19 @@ on:
   pull_request:
 
 jobs:
-  test-develop:
+  test:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        shell: [angular, dotnet, gleam, haskell, java, node, python, rust]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
-      - run: nix develop .#${{ matrix.shell }}
-
-  test-profile:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        package: [format, github-release]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
-      - run: nix profile install .#${{ matrix.package }}
-      - run: which ${{ matrix.package }}
+      - run: nix flake check -v
 
   automerge:
     if: contains(github.event.pull_request.labels.*.name, 'automerge')
-    needs: [test-develop, test-profile]
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,3 +25,4 @@ jobs:
       - run: gh pr merge --rebase --auto
     env:
       GH_TOKEN: ${{ secrets.GH_REPO_PAT }}
+
