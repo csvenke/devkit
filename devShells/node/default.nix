@@ -4,7 +4,6 @@ pkgs.mkShell {
   packages = with pkgs; [
     nodejs
     pnpm
-    yarn
     bun
     fnm
   ];
