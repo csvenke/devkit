@@ -6,29 +6,42 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, ... }:
+  outputs =
+    inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = nixpkgs.lib.systems.flakeExposed;
-      perSystem = { system, ... }:
+      imports = [
+        inputs.flake-parts.flakeModules.easyOverlay
+      ];
+      perSystem =
+        { pkgs, ... }:
         let
-          pkgs = import nixpkgs {
-            inherit system;
-          };
-
-          inherit (builtins) readDir mapAttrs;
-          inherit (pkgs.lib) pipe;
-          inherit (pkgs.lib.attrsets) filterAttrs;
-
-          callPackages = path:
-            pipe path [
-              readDir
-              (filterAttrs (_: value: value == "directory"))
-              (mapAttrs (name: _: pkgs.callPackage "${path}/${name}" { }))
-            ];
+          inherit (pkgs) callPackage;
+          angular-language-server = callPackage ./packages/angular-language-server { };
+          css-variables-language-server = callPackage ./packages/css-variables-language-server { };
         in
         {
-          packages = callPackages ./packages;
-          devShells = callPackages ./devShells;
+          overlayAttrs = {
+            inherit angular-language-server;
+            inherit css-variables-language-server;
+          };
+          packages = {
+            inherit angular-language-server;
+            inherit css-variables-language-server;
+            format = callPackage ./packages/format { };
+            github-release = callPackage ./packages/github-release { };
+          };
+          devShells = {
+            angular = callPackage ./devShells/angular {
+              inherit angular-language-server;
+            };
+            dotnet = callPackage ./devShells/dotnet { };
+            haskell = callPackage ./devShells/haskell { };
+            java = callPackage ./devShells/java { };
+            node = callPackage ./devShells/node { };
+            python = callPackage ./devShells/python { };
+            rust = callPackage ./devShells/rust { };
+          };
         };
       flake = {
         templates = {

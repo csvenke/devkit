@@ -25,4 +25,3 @@ jobs:
       - run: gh pr merge --rebase --auto
     env:
       GH_TOKEN: ${{ secrets.GH_REPO_PAT }}
-

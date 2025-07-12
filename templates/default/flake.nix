@@ -22,6 +22,9 @@
         let
           pkgs = import nixpkgs {
             inherit system;
+            overlays = [
+              inputs.devkit.overlays.default
+            ];
             config = {
               allowUnfree = true;
             };
