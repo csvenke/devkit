@@ -21,10 +21,6 @@
           css-variables-language-server = callPackage ./packages/css-variables-language-server { };
         in
         {
-          overlayAttrs = {
-            inherit angular-language-server;
-            inherit css-variables-language-server;
-          };
           packages = {
             inherit angular-language-server;
             inherit css-variables-language-server;
