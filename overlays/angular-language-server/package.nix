@@ -1,9 +1,9 @@
-{ pkgs }:
+{ pkgs, angular-language-server }:
 
 let
   mkAngularLanguageServer =
     version: hash:
-    pkgs.angular-language-server.overrideAttrs (oldAttrs: {
+    angular-language-server.overrideAttrs (oldAttrs: {
       version = version;
       src = pkgs.fetchurl {
         name = "angular-language-server-${version}.zip";
@@ -17,7 +17,7 @@ let
   v17 = mkAngularLanguageServer "17.3.2" "sha256-rqPGS9Fs+5QX94uW4Ttx7O8hlzo0g1aWFpKHsz1+7gg=";
   v18 = mkAngularLanguageServer "18.2.0" "sha256-rl04nqSSBMjZfPW8Y+UtFLFLDFd5FSxJs3S937mhDWE=";
   v19 = mkAngularLanguageServer "19.2.4" "sha256-LJpv7ZVnJrPb4Ty0H250WcliCoJS4lXc878BTYHfJ+8=";
-  latest = pkgs.angular-language-server;
+  latest = angular-language-server;
 in
 
 pkgs.writeShellApplication {

@@ -14,30 +14,35 @@
         inputs.flake-parts.flakeModules.easyOverlay
       ];
       perSystem =
-        { pkgs, ... }:
+        { system, ... }:
         let
-          inherit (pkgs) callPackage;
-          angular-language-server = callPackage ./packages/angular-language-server { };
-          css-variables-language-server = callPackage ./packages/css-variables-language-server { };
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              (import ./overlays/default.nix)
+            ];
+            config = {
+              allowUnfree = true;
+            };
+          };
+          inherit (pkgs) lib callPackage;
+          packages = lib.packagesFromDirectoryRecursive {
+            inherit callPackage;
+            directory = ./packages;
+          };
+          devShells = lib.packagesFromDirectoryRecursive {
+            inherit callPackage;
+            directory = ./devShells;
+          };
+          overlayAttrs = lib.packagesFromDirectoryRecursive {
+            inherit callPackage;
+            directory = ./overlays;
+          };
         in
         {
-          packages = {
-            inherit angular-language-server;
-            inherit css-variables-language-server;
-            format = callPackage ./packages/format { };
-            github-release = callPackage ./packages/github-release { };
-          };
-          devShells = {
-            angular = callPackage ./devShells/angular {
-              inherit angular-language-server;
-            };
-            dotnet = callPackage ./devShells/dotnet { };
-            haskell = callPackage ./devShells/haskell { };
-            java = callPackage ./devShells/java { };
-            node = callPackage ./devShells/node { };
-            python = callPackage ./devShells/python { };
-            rust = callPackage ./devShells/rust { };
-          };
+          inherit overlayAttrs;
+          inherit packages;
+          inherit devShells;
         };
       flake = {
         templates = {

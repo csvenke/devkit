@@ -19,4 +19,3 @@ pkgs.writeShellApplication {
     prettier --config ${prettierrc} --write .
   '';
 }
-
