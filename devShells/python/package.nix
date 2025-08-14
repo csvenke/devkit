@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  zlib,
   stdenv,
   python3,
 }:
@@ -8,6 +9,7 @@
 let
   libraryPath = lib.makeLibraryPath [
     stdenv.cc.cc
+    zlib
   ];
   python = python3.withPackages (ps: [
     ps.pip
