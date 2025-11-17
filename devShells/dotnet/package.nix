@@ -13,7 +13,7 @@ pkgs.mkShell {
   packages = [
     dotnet
     pkgs.csharpier
-    pkgs.omnisharp-roslyn
+    pkgs.roslyn-ls
     pkgs.netcoredbg
   ];
   shellHook = ''
