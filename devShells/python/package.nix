@@ -1,29 +1,21 @@
-{
-  pkgs,
-  lib,
-  zlib,
-  stdenv,
-  python3,
-}:
+{ pkgs }:
 
 let
-  libraryPath = lib.makeLibraryPath [
-    stdenv.cc.cc
-    zlib
+  libraryPath = pkgs.lib.makeLibraryPath [
+    pkgs.stdenv.cc.cc
+    pkgs.zlib
   ];
-  python = python3.withPackages (ps: [
+  python = pkgs.python312.withPackages (ps: [
     ps.pip
     ps.pipx
   ]);
 in
-
 pkgs.mkShell {
   packages = [
     python
     pkgs.pyright
     pkgs.ruff
   ];
-  shellHook = ''
-    export "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${libraryPath}"
-  '';
+
+  LD_LIBRARY_PATH = libraryPath;
 }

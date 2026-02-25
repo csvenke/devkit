@@ -24,10 +24,11 @@ pkgs.writeShellApplication {
   name = "ngserver";
   runtimeInputs = with pkgs; [ jq ];
   text = ''
-    function get_angular_version() {
+    get_angular_version() {
       npm list @angular/core --json | jq -r '.dependencies."@angular/core".version' | cut -d. -f1
     }
-    function get_server_for_version() {
+
+    get_server_for_version() {
       local version=$1
 
       case $version in

@@ -1,12 +1,14 @@
-{
-  mkShell,
-  nodePackages,
-  angular-language-server,
-}:
+{ pkgs }:
 
-mkShell {
+pkgs.mkShell {
   packages = [
-    nodePackages."@angular/cli"
-    angular-language-server
+    pkgs.nodejs
+    pkgs.nodePackages."@angular/cli"
+    pkgs.angular-language-server
   ];
+
+  shellHook = /* bash */ ''
+    export NG_CLI_ANALYTICS=false
+    export NG_DISABLE_VERSION_CHECK=1
+  '';
 }

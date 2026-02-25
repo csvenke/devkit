@@ -3,21 +3,20 @@
 let
   dotnet =
     with pkgs.dotnetCorePackages;
-    (combinePackages [
+    combinePackages [
       sdk_8_0
       sdk_9_0
       sdk_10_0
-    ]);
+    ];
 in
 
 pkgs.mkShell {
   packages = [
     dotnet
-    pkgs.csharpier
     pkgs.roslyn-ls
     pkgs.netcoredbg
+    pkgs.csharpier
   ];
-  shellHook = ''
-    export DOTNET_ROOT=${dotnet}
-  '';
+
+  DOTNET_ROOT = "${dotnet}";
 }

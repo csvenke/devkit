@@ -1,9 +1,11 @@
 { pkgs }:
 
 pkgs.mkShell {
-  packages = [
-    pkgs.cargo
-    pkgs.rustc
-    pkgs.rust-analyzer
+  packages = with pkgs; [
+    cargo
+    rustc
+    rust-analyzer
+    rustfmt
+    clippy
   ];
 }

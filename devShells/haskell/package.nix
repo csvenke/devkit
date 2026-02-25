@@ -1,12 +1,13 @@
 { pkgs }:
 
 pkgs.mkShell {
-  buildInputs = [
-    pkgs.ghc
-    pkgs.cabal-install
-    pkgs.stack
-    pkgs.haskell-language-server
-    pkgs.haskellPackages.hoogle
-    pkgs.haskellPackages.fast-tags
+  packages = with pkgs; [
+    ghc
+    cabal-install
+    stack
+    haskell-language-server
+    haskellPackages.hoogle
+    haskellPackages.fast-tags
+    haskellPackages.hlint
   ];
 }
