@@ -18,5 +18,7 @@ pkgs.mkShell {
     pkgs.csharpier
   ];
 
-  DOTNET_ROOT = "${dotnet}";
+  shellHook = /* bash */ ''
+    export DOTNET_ROOT="${dotnet}"
+  '';
 }

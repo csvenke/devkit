@@ -17,5 +17,7 @@ pkgs.mkShell {
     pkgs.ruff
   ];
 
-  LD_LIBRARY_PATH = libraryPath;
+  shellHook /* bash */ = ''
+    export LD_LIBRARY_PATH="${libraryPath}"
+  '';
 }
