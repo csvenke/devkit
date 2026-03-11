@@ -14,6 +14,7 @@ pkgs.mkShell {
   packages = [
     dotnet
     pkgs.roslyn-ls
+    pkgs.roslyn
     pkgs.netcoredbg
     pkgs.csharpier
   ];
