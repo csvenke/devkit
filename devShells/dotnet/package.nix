@@ -19,6 +19,6 @@ pkgs.mkShell {
   ];
 
   shellHook = /* bash */ ''
-    export DOTNET_ROOT="${dotnet}"
+    export DOTNET_ROOT="${dotnet}/share/dotnet"
   '';
 }
