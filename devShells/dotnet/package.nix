@@ -13,7 +13,12 @@ in
 pkgs.mkShell {
   packages = [
     dotnet
-    pkgs.roslyn-ls
+    (pkgs.roslyn-ls.overrideAttrs (oldAttrs: {
+      patches = (oldAttrs.patches or [ ]) ++ [
+        ./patches/roslyn-ls-filter-nonexistent-dirs.patch
+      ];
+    }))
+    pkgs.inotify-tools
     pkgs.netcoredbg
     pkgs.csharpier
   ];

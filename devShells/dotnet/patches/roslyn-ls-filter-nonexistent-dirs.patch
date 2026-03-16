@@ -1,0 +1,23 @@
+diff --git a/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/HostWorkspace/FileWatching/LspFileChangeWatcher.cs b/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/HostWorkspace/FileWatching/LspFileChangeWatcher.cs
+index abc123..def456 100644
+--- a/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/HostWorkspace/FileWatching/LspFileChangeWatcher.cs
++++ b/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/HostWorkspace/FileWatching/LspFileChangeWatcher.cs
+@@ -55,8 +55,13 @@ internal sealed class LspFileChangeWatcher : IFileChangeWatcher
+             _watchedDirectories = watchedDirectories;
+             _lspFileChangeWatcher = lspFileChangeWatcher;
+ 
+-            // If we have any watched directories, then watch those directories directly
+-            if (watchedDirectories.Any())
++            // Filter out directories that don't exist before registering watchers.
++            // This prevents errors on NixOS where standard FHS paths like /usr/lib/dotnet/packs don't exist.
++            var existingDirectories = watchedDirectories
++                .Where(d => System.IO.Directory.Exists(d.Path))
++                .ToImmutableArray();
++
++            if (existingDirectories.Any())
+             {
+-                var directoryWatches = watchedDirectories.Select(d =>
++                var directoryWatches = existingDirectories.Select(d =>
+                 {
+                     var pattern = "**/*" + d.ExtensionFilters.Length switch
+                     {
