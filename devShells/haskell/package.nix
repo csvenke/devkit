@@ -5,7 +5,6 @@ pkgs.mkShell {
     ghc
     cabal-install
     stack
-    haskell-language-server
     haskellPackages.hoogle
     haskellPackages.fast-tags
     haskellPackages.hlint

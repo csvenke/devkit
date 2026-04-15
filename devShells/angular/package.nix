@@ -4,7 +4,6 @@ pkgs.mkShell {
   packages = [
     pkgs.nodejs
     pkgs.nodePackages."@angular/cli"
-    pkgs.angular-language-server
   ];
 
   shellHook = /* bash */ ''

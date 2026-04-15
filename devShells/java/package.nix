@@ -5,6 +5,5 @@ pkgs.mkShell {
     jdk
     maven
     gradle
-    jdt-language-server
   ];
 }

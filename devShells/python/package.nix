@@ -13,7 +13,6 @@ in
 pkgs.mkShell {
   packages = [
     python
-    pkgs.pyright
     pkgs.ruff
   ];
 
