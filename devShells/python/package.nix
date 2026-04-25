@@ -14,6 +14,7 @@ pkgs.mkShell {
   packages = [
     python
     pkgs.ruff
+    pkgs.uv
   ];
 
   shellHook /* bash */ = ''
